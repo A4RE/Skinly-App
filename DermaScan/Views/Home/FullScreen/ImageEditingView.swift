@@ -1,54 +1,32 @@
 import SwiftUI
 
 struct ImageEditingView: View {
-    let image: UIImage
+    @State var image: UIImage
+    @State private var cropRect: CGRect = .zero
+    @State private var croppedImage: UIImage?
     var onCropFinished: (UIImage?) -> Void
 
     @Environment(\.dismiss) private var dismiss
-
-    @State private var dragOffset: CGSize = .zero
-    @State private var currentOffset: CGSize = .zero
-    @State private var scale: CGFloat = 1.0
-
-    private let initialCropSize: CGFloat = 150
+    
+    private let containerSize = CGSize(width: 300, height: 300)
 
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-
-                Image(uiImage: image)
-                    .resizable()
-                    .frame(width: geometry.size.height * 0.48, height: geometry.size.height * 0.48)
-                    .clipped()
-
-                Rectangle()
-                    .stroke(Color.blue, lineWidth: 3)
-                    .frame(width: initialCropSize * scale, height: initialCropSize * scale)
-                    .offset(dragOffset)
-                    .gesture(
-                        DragGesture()
-                            .onChanged { value in
-                                self.dragOffset = CGSize(
-                                    width: currentOffset.width + value.translation.width,
-                                    height: currentOffset.height + value.translation.height
-                                )
-                            }
-                            .onEnded { _ in
-                                self.currentOffset = self.dragOffset
-                            }
-                    )
-                    .gesture(
-                        MagnificationGesture()
-                            .onChanged { value in
-                                self.scale = max(0.5, min(value, 3.0))
-                            }
-                    )
+                
+                ImageCropper(
+                    image: $image,
+                    cropRect: $cropRect,
+                    containerSize: containerSize
+                )
+                .frame(width: containerSize.width, height: containerSize.height)
+                .border(Color.gray, width: 1)
 
                 VStack {
                     Spacer()
 
                     Button(action: {
-                        cropImage(in: geometry)
+                        cropImage()
                     }) {
                         Text("Готово")
                             .font(.headline)
@@ -77,28 +55,8 @@ struct ImageEditingView: View {
         .background(Color.appBackground)
     }
 
-    private func cropImage(in geometry: GeometryProxy) {
-        let imageSize = image.size
-        let frameSize = geometry.size
-
-        let displayedImageHeight = frameSize.width * (imageSize.height / imageSize.width)
-        let imageYOffset = (frameSize.height - displayedImageHeight) / 2
-
-        let visibleCropWidth = initialCropSize * scale
-        let visibleCropHeight = initialCropSize * scale
-
-        let xRatio = imageSize.width / frameSize.width
-        let yRatio = imageSize.height / displayedImageHeight
-
-        let cropX = (frameSize.width / 2 + dragOffset.width - visibleCropWidth / 2) * xRatio
-        let cropY = ((frameSize.height - displayedImageHeight) / 2 + (displayedImageHeight / 2) + dragOffset.height - visibleCropHeight / 2) * yRatio
-
-        let cropWidth = visibleCropWidth * xRatio
-        let cropHeight = visibleCropHeight * yRatio
-
-        let croppingRect = CGRect(x: cropX, y: cropY, width: cropWidth, height: cropHeight)
-
-        let croppedImage = image.crop(to: croppingRect)
+    private func cropImage() {
+        croppedImage = image.cropped(to: cropRect)
         onCropFinished(croppedImage)
         dismiss()
     }

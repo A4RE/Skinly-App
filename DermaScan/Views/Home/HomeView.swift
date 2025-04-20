@@ -57,9 +57,7 @@ struct HomeView: View {
             })
             .fullScreenCover(isPresented: $isShowingImagePicker) {
                 ImagePicker(sourceType: selectedSourceType) { image in
-                    let resizedImage = image.resizedToSafeSize(maxSize: 1024)
-
-                    imageEditingModel.originalImage = resizedImage
+                    imageEditingModel.originalImage = image
                     
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                         isShowingScanEditor = true
@@ -69,7 +67,7 @@ struct HomeView: View {
             .navigationTitle("")
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Text("Skin Scanner")
+                    Text("Skinly")
                         .font(.largeTitle.bold())
                         .foregroundColor(Color.appPrimaryText)
                 }
@@ -122,7 +120,7 @@ struct HomeView: View {
                     .frame(height: 25)
                     .foregroundStyle(Color.appPrimaryText)
                 VStack(alignment: .leading) {
-                    Text("Последняя")
+                    Text("Последний")
                         .font(.headline)
                         .foregroundColor(.appPrimaryText)
                     Text("14.07.2025")
@@ -139,7 +137,7 @@ struct HomeView: View {
         Button(action: {
             viewModel.showSourceSelectionSheet.toggle()
         }) {
-            Text("Сканировать кожу")
+            Text("Сканировать")
                 .font(.headline)
                 .padding()
                 .frame(maxWidth: .infinity)
@@ -182,12 +180,6 @@ struct HomeView: View {
             break
         }
     }
-    
-    private func handleCroppedImage(_ image: UIImage) {
-        // Здесь ты получаешь обрезанное изображение!
-        // Можно сохранить его, отправить в модель, или что тебе нужно
-        print("Обрезанное изображение получено!")
-    }
 
     private func checkCameraPermissionAndOpen() {
         let cameraAuthorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
@@ -224,7 +216,6 @@ struct HomeView: View {
 
         switch photoAuthorizationStatus {
         case .authorized, .limited:
-            // Можно открыть галерею
             selectedSourceType = .photoLibrary
             isShowingImagePicker = true
 

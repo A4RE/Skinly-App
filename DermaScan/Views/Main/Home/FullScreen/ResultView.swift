@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 
 struct DiagnosisResult1 {
     let title: String
@@ -7,11 +8,11 @@ struct DiagnosisResult1 {
     let color: Color
 }
 
-// TODO: Сделать нормальные перемменые
 struct ResultView: View {
     let image: UIImage
     let diagnosis: DiagnosisResult
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
     @State private var isShowSavingSheet: Bool = false
     
     var body: some View {
@@ -28,10 +29,53 @@ struct ResultView: View {
             .padding(.horizontal)
             .background(Color.appBackground)
             .sheet(isPresented: $isShowSavingSheet) {
-                SaveSheet {
+                SaveSheet { isNewCase in
+                    if isNewCase {
+                        saveNewScanCase(context: modelContext)
+                    } else {
+                        saveResult(context: modelContext)
+                    }
+                    NotificationCenter.default.post(name: .didAddNewScan, object: nil)
                     dismiss()
                 }
             }
+        }
+    }
+    
+    private func saveResult(context: ModelContext) {
+        let scan = Scan(
+            date: Date(),
+            imageData: image.pngData()?.base64EncodedString() ?? "",
+            diagnosisLabel: diagnosis.label,
+            riskLevel: diagnosis.riskLevel
+        )
+        
+        context.insert(scan)
+        
+        do {
+            try context.save()
+            print("Результат успешно сохранён.")
+        } catch {
+            print("Ошибка при сохранении результата: \(error.localizedDescription)")
+        }
+    }
+    
+    private func saveNewScanCase(context: ModelContext) {
+        let scan = Scan(
+            date: Date(),
+            imageData: image.pngData()?.base64EncodedString() ?? "",
+            diagnosisLabel: diagnosis.label,
+            riskLevel: diagnosis.riskLevel
+        )
+        
+        let scanCase = ScanCase(id: UUID(), scans: [scan])
+        context.insert(scanCase)
+        
+        do {
+            try context.save()
+            print("Новый ScanCase успешно сохранён с одним Scan.")
+        } catch {
+            print("Ошибка при сохранении ScanCase: \(error.localizedDescription)")
         }
     }
     

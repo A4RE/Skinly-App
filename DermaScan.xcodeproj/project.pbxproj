@@ -255,7 +255,7 @@
 				DEVELOPMENT_TEAM = 6N55PVMV5W;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Skin Scanner";
+				INFOPLIST_KEY_CFBundleDisplayName = Skinly;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Предоставьте доступ к камере, чтобы приложение могло начать сканирование";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "нам нужен доступ к вашей галлерее для выбора изображений кожи";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -291,7 +291,7 @@
 				DEVELOPMENT_TEAM = 6N55PVMV5W;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Skin Scanner";
+				INFOPLIST_KEY_CFBundleDisplayName = Skinly;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Предоставьте доступ к камере, чтобы приложение могло начать сканирование";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "нам нужен доступ к вашей галлерее для выбора изображений кожи";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

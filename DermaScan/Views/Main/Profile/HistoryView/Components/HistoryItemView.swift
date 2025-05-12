@@ -6,13 +6,14 @@ struct HistoryItemView: View {
     var body: some View {
         HStack(spacing: 16) {
             if let imageData = scanCase.firstImageData,
-               let uiImage = UIImage(named: imageData) {
+               let imageDataDecoded = Data(base64Encoded: imageData),
+               let uiImage = UIImage(data: imageDataDecoded) {
                 Image(uiImage: uiImage)
                     .resizable()
                     .scaledToFill()
                     .frame(width: 60, height: 60)
                     .clipped()
-                    .cornerRadius(8)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
             } else {
                 RoundedRectangle(cornerRadius: 8)
                     .fill(Color.appSecondaryBackground)

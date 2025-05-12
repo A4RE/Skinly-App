@@ -1,17 +1,23 @@
+import SwiftData
 import Foundation
 
-struct Scan: Identifiable {
-    let id: UUID
+@Model
+class Scan {
+    @Attribute(.unique) var id: UUID
     var date: Date
     var imageData: String
-    var diagnosis: DiagnosisResult
-}
+    var diagnosisLabel: String
+    var riskLevelRaw: String
 
-extension Scan {
-    var dateFormatted: String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .none
-        return formatter.string(from: date)
+    init(id: UUID = UUID(), date: Date, imageData: String, diagnosisLabel: String, riskLevel: RiskLevel) {
+        self.id = id
+        self.date = date
+        self.imageData = imageData
+        self.diagnosisLabel = diagnosisLabel
+        self.riskLevelRaw = riskLevel.rawValue
+    }
+
+    var diagnosis: DiagnosisResult {
+        DiagnosisResult(label: diagnosisLabel, riskLevel: RiskLevel(rawValue: riskLevelRaw) ?? .safe)
     }
 }

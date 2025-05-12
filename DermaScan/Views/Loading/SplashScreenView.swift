@@ -11,7 +11,7 @@ struct SplashScreenView: View {
                 .scaledToFit()
                 .frame(width: 300, height: 300)
             Spacer()
-            Text("Skin\nScanner")
+            Text("Skinly")
                 .font(.system(size: 50, weight: .black))
                 .multilineTextAlignment(.center)
                 .foregroundColor(Color.appPrimaryText)

@@ -1,13 +1,17 @@
 import SwiftUI
 import Photos
 import AVFoundation
+import SwiftData
 
 struct HomeView: View {
-    @StateObject private var viewModel = HomeViewModel()
-    @StateObject private var imageEditingModel = ImageEditingModel()
+    
+    @Environment(\.modelContext) private var modelContext
     
     @EnvironmentObject private var historyViewModel: HistoryListViewModel
     @EnvironmentObject private var profileViewModel: ProfileViewModel
+    
+    @StateObject private var viewModel = HomeViewModel()
+    @StateObject private var imageEditingModel = ImageEditingModel()
     
     @State private var isShowingImagePicker = false
     @State private var selectedSourceType: UIImagePickerController.SourceType = .photoLibrary
@@ -21,12 +25,23 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                createHeader()
-                Spacer()
-                createPhotoGuide()
-                Spacer()
-                createScanButton()
+                if historyViewModel.scanCases.count == 0 {
+                    createEmptyListView()
+                } else {
+                    createHeader()
+                    Spacer()
+                    createScanButton()
+                        .padding(.bottom, 10)
+                }
             }
+            .onAppear {
+                historyViewModel.loadCases(context: modelContext)
+                profileViewModel.updateStatistics(from: historyViewModel)
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .didAddNewScan)) { _ in
+                historyViewModel.loadCases(context: modelContext)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
             .background(Color.appBackground)
             .sheet(isPresented: $viewModel.showSourceSelectionSheet) {
                 SourceSelectionSheet(viewModel: viewModel) { source in
@@ -92,44 +107,32 @@ struct HomeView: View {
             } message: {
                 Text("Пожалуйста, разрешите доступ к библиотеке фотографий в настройках устройства.")
             }
+            .ignoresSafeArea(.all)
         }
     }
     
     @ViewBuilder
     private func createHeader() -> some View {
-        HStack {
-            HStack {
-                Image(systemName: "magnifyingglass")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(height: 25)
+        ScrollView(.vertical, showsIndicators: false) {
+            VStack(alignment: .leading) {
+                StatisticsView(statistics: profileViewModel.statistics)
+                    .shadow(color: Color.black.opacity(0.2), radius: 5, x: 0, y: 2)
+                createHistoryButton()
+                    .padding(.vertical, 10)
+                Text("Последние сканирования")
+                    .font(.headline)
+                    .multilineTextAlignment(.leading)
                     .foregroundStyle(Color.appPrimaryText)
-                VStack(alignment: .leading) {
-                    Text("Cканирований")
-                        .font(.headline)
-                        .foregroundColor(.appPrimaryText)
-                    Text("\(profileViewModel.statistics.totalScans)")
-                        .foregroundColor(.appSecondaryText)
+                ForEach(historyViewModel.scanCases.prefix(5)) { scanCase in
+                    if let scan = scanCase.scans.last {
+                        ScanItemView(scan: scan)
+                    }
                 }
+                .padding(.vertical, 5)
             }
-            Spacer()
-            HStack {
-                Image(systemName: "pencil.and.list.clipboard")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(height: 25)
-                    .foregroundStyle(Color.appPrimaryText)
-                VStack(alignment: .leading) {
-                    Text("Последний")
-                        .font(.headline)
-                        .foregroundColor(.appPrimaryText)
-                    Text("14.07.2025")
-                        .foregroundColor(.appSecondaryText)
-                }
-            }
+            .padding(.horizontal)
         }
-        .padding(.horizontal)
-        .padding(.top)
+        .padding(.top, 120)
     }
     
     @ViewBuilder
@@ -143,31 +146,52 @@ struct HomeView: View {
                 .frame(maxWidth: .infinity)
                 .background(Color.appAccent)
                 .foregroundColor(.white)
-                .cornerRadius(12)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
                 .padding(.horizontal)
         }
         .padding(.bottom)
     }
     
     @ViewBuilder
-    private func createPhotoGuide() -> some View {
-        VStack(spacing: 12) {
-            Image(systemName: "camera.viewfinder")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 120, height: 120)
-                .foregroundColor(.appSecondaryText)
-            
-            Text("Начните первое сканирование!")
+    private func createHistoryButton() -> some View {
+        NavigationLink(destination: HistoryListView()) {
+            Text("История сканирований")
                 .font(.headline)
-                .foregroundColor(.appSecondaryText)
-            
-            Text("📷 Фотографируйте при хорошем освещении.\nИзбегайте теней.\nФокусируйтесь на нужной области кожи.")
-                .font(.subheadline)
-                .multilineTextAlignment(.center)
-                .foregroundColor(.gray)
-                .padding(.horizontal)
+                .padding()
+                .frame(maxWidth: .infinity)
+                .background(Color.appAccent)
+                .foregroundColor(.white)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
         }
+    }
+    
+    @ViewBuilder
+    private func createEmptyListView() -> some View {
+        VStack(spacing: 15) {
+            ZStack {
+                Image(systemName: "pencil.and.list.clipboard")
+                    .resizable()
+                    .foregroundStyle(Color.appSecondaryText)
+                    .scaledToFit()
+                    .frame(height: 100)
+                    .offset(x: 8)
+                Circle()
+                    .stroke(Color.appSecondaryText, lineWidth: 2)
+                    .frame(height: 150)
+            }
+            Text("История сканирований пуста")
+                .font(.title2)
+                .fontWeight(.semibold)
+                .foregroundStyle(Color.appSecondaryText)
+            Text("Сделайте снимок кожи для проведения анализа на кожные заболевания, включая невус и меланому.")
+                .font(.headline)
+                .fontWeight(.regular)
+                .foregroundStyle(Color.appSecondaryText)
+                .multilineTextAlignment(.center)
+                .padding(.bottom)
+            createScanButton()
+        }
+        .padding(.horizontal)
     }
     
     private func handleImageSource(_ source: ImageSource) {

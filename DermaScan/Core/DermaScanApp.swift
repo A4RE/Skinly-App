@@ -9,7 +9,7 @@ struct DermaScanApp: App {
     var body: some Scene {
         WindowGroup {
             if appState.isSplashShown {
-                MainTabView()
+                HomeView()
                     .environmentObject(appState)
                     .environmentObject(historyViewModel)
                     .environmentObject(profileViewModel)
@@ -18,5 +18,6 @@ struct DermaScanApp: App {
                     .environmentObject(appState)
             }
         }
+        .modelContainer(for: [ScanCase.self, Scan.self])
     }
 }

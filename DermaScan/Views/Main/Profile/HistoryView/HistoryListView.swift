@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct HistoryListView: View {
+    @Environment(\.modelContext) private var modelContext
     @EnvironmentObject private var viewModel: HistoryListViewModel
     
     var body: some View {
@@ -26,7 +27,7 @@ struct HistoryListView: View {
                 }
             }
             .onAppear {
-                viewModel.loadCases()
+                viewModel.loadCases(context: modelContext)
             }
         }
     }
@@ -71,15 +72,15 @@ struct HistoryListView: View {
                 .frame(maxWidth: .infinity)
                 .background(Color.appAccent)
                 .foregroundColor(.white)
-                .cornerRadius(12)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
                 .padding()
         }
     }
 }
 
-#Preview {
-    NavigationStack {
-        HistoryListView()
-            .environmentObject(HistoryListViewModel())
-    }
-}
+//#Preview {
+//    NavigationStack {
+//        HistoryListView()
+//            .environmentObject(HistoryListViewModel())
+//    }
+//}

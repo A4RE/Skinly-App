@@ -4,7 +4,7 @@ struct SaveSheet: View {
     
     @Environment(\.dismiss) private var dismiss
     let size = UIScreen.main.bounds.size
-    var completion: () -> (Void)
+    var completion: (_ isNewCase: Bool) -> Void
     
     var body: some View {
         VStack(spacing: 24) {
@@ -14,7 +14,7 @@ struct SaveSheet: View {
                 .padding(.top, 24)
 
             Button(action: {
-                completion()
+                completion(true)
                 dismiss()
             }) {
                 Text("Новое сканирование")
@@ -22,12 +22,12 @@ struct SaveSheet: View {
                     .padding()
                     .background(Color.appAccent)
                     .foregroundColor(.white)
-                    .cornerRadius(12)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
             }
             .padding(.horizontal)
 
             Button(action: {
-                completion()
+                completion(false)
                 dismiss()
             }) {
                 Text("Добавить в существующее")
@@ -35,7 +35,7 @@ struct SaveSheet: View {
                     .padding()
                     .background(Color.appSecondaryBackground)
                     .foregroundColor(.appPrimaryText)
-                    .cornerRadius(12)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
             }
             .padding(.horizontal)
             
@@ -47,7 +47,7 @@ struct SaveSheet: View {
                     .padding()
                     .background(Color.appSecondaryBackground)
                     .foregroundColor(.appPrimaryText)
-                    .cornerRadius(12)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
             }
             .padding(.horizontal)
             .padding(.bottom)

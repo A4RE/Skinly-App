@@ -34,7 +34,7 @@ struct ImageEditingView: View {
                             .padding()
                             .background(Color.blue)
                             .foregroundColor(.white)
-                            .cornerRadius(12)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
                             .padding(.horizontal)
                     }
                     Button(action: {
@@ -46,7 +46,7 @@ struct ImageEditingView: View {
                             .padding()
                             .background(Color.red)
                             .foregroundColor(.white)
-                            .cornerRadius(12)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
                             .padding(.horizontal)
                     }
                 }

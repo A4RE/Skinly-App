@@ -1,8 +1,15 @@
-import SwiftUI
+import SwiftData
+import Foundation
 
-struct ScanCase: Identifiable {
-    let id: UUID
-    var scans: [Scan]
+@Model
+class ScanCase {
+    @Attribute(.unique) var id: UUID
+    var scans: [Scan] = []
+
+    init(id: UUID = UUID(), scans: [Scan] = []) {
+        self.id = id
+        self.scans = scans
+    }
 
     var firstImageData: String? {
         scans.first?.imageData

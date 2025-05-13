@@ -17,23 +17,23 @@ struct CaseDetailView: View {
                 }
                 .padding(.top, 100)
                 .padding(.bottom, 100)
-                Button(action: {
-                    //                    viewModel.addNewScan(to: caseID)
-                }) {
-                    Text("Добавить сканирование")
-                        .font(.headline)
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(Color.appAccent)
-                        .foregroundColor(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                }
-                .padding(.horizontal)
-                .offset(y: geometry.size.height * 0.43)
-
+                
+                Rectangle()
+                    .fill(.white)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 120)
+                    .frame(maxHeight: .infinity, alignment: .top)
+                    .offset(y: -20)
             }
             .frame(width: geometry.size.width, height: geometry.size.height, alignment: .top)
-            .navigationTitle("Детали кейса")
+            .navigationTitle("")
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Text("Детали сканирования")
+                        .font(.headline.bold())
+                        .foregroundColor(Color.appPrimaryText)
+                }
+            }
             .background(Color.appBackground)
         }
         .ignoresSafeArea(.all)

@@ -1,5 +1,7 @@
 import SwiftUI
 
+
+// TODO: Добавить возможность менять размер изображения, а именно - приближать
 struct ImageEditingView: View {
     @State var image: UIImage
     @State private var cropRect: CGRect = .zero

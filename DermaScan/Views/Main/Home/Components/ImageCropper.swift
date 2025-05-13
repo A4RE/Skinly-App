@@ -159,40 +159,50 @@ struct ImageCropper: UIViewRepresentable {
         }
         
         @objc func handlePinch(_ gesture: UIPinchGestureRecognizer) {
-            guard
-                let imageView = imageView,
-                let cropView  = cropView
-            else { return }
-            
+            guard let imageView = imageView, let cropView = cropView else { return }
+
             switch gesture.state {
             case .began:
                 initialScale = currentScale
-                
-            case .changed:
 
+            case .changed:
                 let proposed = initialScale * gesture.scale
                 let clamped  = min(max(proposed, minScale), maxScale)
                 currentScale = clamped
 
+                if clamped == minScale {
+                    imageView.transform = .identity
+                    imageOffset = .zero
+
+                    self.imageViewSize = self.originalImageViewSize
+
+                    let center = CGPoint(x: containerSize.width/2,
+                                         y: containerSize.height/2)
+                    imageView.center = center
+
+                    parent.updateCropRect(cropView.frame, coordinator: self)
+                    return
+                }
+
                 imageView.transform = CGAffineTransform(scaleX: clamped, y: clamped)
 
-                self.imageViewSize = CGSize(
+                imageViewSize = CGSize(
                     width: originalImageViewSize.width  * clamped,
                     height: originalImageViewSize.height * clamped
                 )
-                
-                let maxOffsetX = max((imageViewSize.width  - containerSize.width)  / 2, 0)
-                let maxOffsetY = max((imageViewSize.height - containerSize.height) / 2, 0)
-                let clampedOffset = CGPoint(
-                    x: min(max(imageOffset.x, -maxOffsetX), maxOffsetX),
-                    y: min(max(imageOffset.y, -maxOffsetY), maxOffsetY)
-                )
-                imageOffset = clampedOffset
-                
-                let containerCenter = CGPoint(
-                    x: containerSize.width  / 2,
-                    y: containerSize.height / 2
-                )
+
+                let halfImgW = imageViewSize.width  / 2
+                let halfImgH = imageViewSize.height / 2
+                let halfConW = containerSize.width  / 2
+                let halfConH = containerSize.height / 2
+
+                let maxOffsetX = max(halfImgW - halfConW, 0)
+                let maxOffsetY = max(halfImgH - halfConH, 0)
+
+                imageOffset.x = min(max(imageOffset.x, -maxOffsetX), maxOffsetX)
+                imageOffset.y = min(max(imageOffset.y, -maxOffsetY), maxOffsetY)
+
+                let containerCenter = CGPoint(x: halfConW, y: halfConH)
                 imageView.center = CGPoint(
                     x: containerCenter.x + imageOffset.x,
                     y: containerCenter.y + imageOffset.y
@@ -200,39 +210,54 @@ struct ImageCropper: UIViewRepresentable {
 
                 parent.updateCropRect(cropView.frame, coordinator: self)
 
+            case .ended:
+                break
             default:
                 break
             }
         }
         
         @objc func handleImagePan(_ gesture: UIPanGestureRecognizer) {
-            guard let imageView = imageView else { return }
-            let translation = gesture.translation(in: imageView.superview)
+            guard
+              let imageView = imageView,
+              currentScale > 1
+            else {
+              gesture.setTranslation(.zero, in: imageView?.superview)
+              return
+            }
 
-            let newOffset = CGPoint(
-                x: imageOffset.x + translation.x,
-                y: imageOffset.y + translation.y
+            let translation = gesture.translation(in: imageView.superview)
+            let rawOffset = CGPoint(
+              x: imageOffset.x + translation.x,
+              y: imageOffset.y + translation.y
             )
-            let maxOffsetX = max((imageViewSize.width  - containerSize.width)  / 2, 0)
-            let maxOffsetY = max((imageViewSize.height - containerSize.height) / 2, 0)
-            
+
+            let frame = imageView.frame
+            let halfImgW = frame.size.width  / 2
+            let halfImgH = frame.size.height / 2
+
+            let halfContW = containerSize.width  / 2
+            let halfContH = containerSize.height / 2
+
+            let maxOffsetX = max(halfImgW - halfContW, 0)
+            let maxOffsetY = max(halfImgH - halfContH, 0)
+
             let clampedOffset = CGPoint(
-                x: min(max(newOffset.x, -maxOffsetX), maxOffsetX),
-                y: min(max(newOffset.y, -maxOffsetY), maxOffsetY)
+              x: min(max(rawOffset.x, -maxOffsetX), maxOffsetX),
+              y: min(max(rawOffset.y, -maxOffsetY), maxOffsetY)
             )
-            
-            let containerCenter = CGPoint(
-                x: containerSize.width  / 2,
-                y: containerSize.height / 2
-            )
+
+            let containerCenter = CGPoint(x: halfContW, y: halfContH)
             imageView.center = CGPoint(
-                x: containerCenter.x + clampedOffset.x,
-                y: containerCenter.y + clampedOffset.y
+              x: containerCenter.x + clampedOffset.x,
+              y: containerCenter.y + clampedOffset.y
             )
-            
+
             if gesture.state == .changed || gesture.state == .ended {
-                imageOffset = clampedOffset
-                parent.updateCropRect(cropView!.frame, coordinator: self)
+              imageOffset = clampedOffset
+              if let cv = cropView {
+                parent.updateCropRect(cv.frame, coordinator: self)
+              }
             }
 
             gesture.setTranslation(.zero, in: imageView.superview)

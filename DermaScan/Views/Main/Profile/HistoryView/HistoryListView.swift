@@ -6,30 +6,32 @@ struct HistoryListView: View {
     
     var body: some View {
         GeometryReader { geo in
-            VStack(spacing: 0) {
-                if viewModel.scanCases.isEmpty {
-                    createEmptyView(geo: geo)
-                } else {
+            ZStack {
+                VStack(spacing: 0) {
                     createListView()
-//                    createEmptyView(geo: geo)
                 }
-                
-                createButton(geo: geo)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.appBackground)
-            .navigationTitle("")
-            .toolbar {
-                ToolbarItem(placement: .automatic) {
-                    Text("История сканирований")
-                        .font(.headline.bold())
-                        .foregroundColor(Color.appPrimaryText)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color.appBackground)
+                .navigationTitle("")
+                .toolbar {
+                    ToolbarItem(placement: .principal) {
+                        Text("История сканирований")
+                            .font(.headline.bold())
+                            .foregroundColor(Color.appPrimaryText)
+                    }
                 }
-            }
-            .onAppear {
-                viewModel.loadCases(context: modelContext)
+                .onAppear {
+                    viewModel.loadCases(context: modelContext)
+                }
+                Rectangle()
+                    .fill(.white)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 120)
+                    .frame(maxHeight: .infinity, alignment: .top)
+                    .offset(y: -120)
             }
         }
+        .toolbarBackground(.hidden, for: .navigationBar)
     }
     
     @ViewBuilder
@@ -47,40 +49,22 @@ struct HistoryListView: View {
         }
     }
     
-    // TODO: Разобраться почему у ряда в листе черный цвето
-    @ViewBuilder
-    private func createListView() -> some View {
-        List(viewModel.scanCases) { scanCase in
-            NavigationLink(destination: CaseDetailView(scans: scanCase.scans)) {
-                HistoryItemView(scanCase: scanCase)
-            }
-            .background(Color.appBackground)
-        }
-        .listStyle(.plain)
-        .scrollIndicators(.hidden, axes: .vertical)
-        .scrollContentBackground(.hidden)
-    }
     
     @ViewBuilder
-    private func createButton(geo: GeometryProxy) -> some View {
-        Button(action: {
-            //                viewModel.addNewScan(to: caseID)
-        }) {
-            Text("Новое сканирование")
-                .font(.headline)
-                .padding()
-                .frame(maxWidth: .infinity)
-                .background(Color.appAccent)
-                .foregroundColor(.white)
-                .clipShape(RoundedRectangle(cornerRadius: 12))
-                .padding()
+    private func createListView() -> some View {
+        ScrollView(.vertical, showsIndicators: false) {
+            LazyVStack(spacing: 10) {
+                ForEach(viewModel.scanCases) { scanCase in
+                    NavigationLink(destination: CaseDetailView(scans: scanCase.scans)) {
+                        HistoryItemView(scanCase: scanCase)
+                            .background(Color.appBackground)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(.vertical, 8)
         }
+        .background(Color.appBackground.ignoresSafeArea())
+        .padding(.horizontal)
     }
 }
-
-//#Preview {
-//    NavigationStack {
-//        HistoryListView()
-//            .environmentObject(HistoryListViewModel())
-//    }
-//}

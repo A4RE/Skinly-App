@@ -33,7 +33,7 @@ struct ResultView: View {
                     if isNewCase {
                         saveNewScanCase(context: modelContext)
                     } else {
-                        saveResult(context: modelContext)
+//                        saveResult(context: modelContext)
                     }
                     NotificationCenter.default.post(name: .didAddNewScan, object: nil)
                     dismiss()

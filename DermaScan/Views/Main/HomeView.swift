@@ -111,6 +111,77 @@ struct HomeView: View {
         }
     }
     
+    private func handleImageSource(_ source: ImageSource) {
+        switch source {
+        case .camera:
+            checkCameraPermissionAndOpen()
+        case .gallery:
+            checkPhotoLibraryPermissionAndOpen()
+        case .files:
+            break
+        }
+    }
+
+    private func checkCameraPermissionAndOpen() {
+        let cameraAuthorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
+
+        switch cameraAuthorizationStatus {
+        case .authorized:
+            selectedSourceType = .camera
+            isShowingImagePicker = true
+
+        case .notDetermined:
+            AVCaptureDevice.requestAccess(for: .video) { granted in
+                DispatchQueue.main.async {
+                    if granted {
+                        self.selectedSourceType = .camera
+                        self.isShowingImagePicker = true
+                    } else {
+                        self.isShowingCameraAlert = true
+                    }
+                }
+            }
+
+        case .denied, .restricted:
+            DispatchQueue.main.async {
+                self.isShowingCameraAlert = true
+            }
+
+        @unknown default:
+            break
+        }
+    }
+
+    private func checkPhotoLibraryPermissionAndOpen() {
+        let photoAuthorizationStatus = PHPhotoLibrary.authorizationStatus(for: .readWrite)
+
+        switch photoAuthorizationStatus {
+        case .authorized, .limited:
+            selectedSourceType = .photoLibrary
+            isShowingImagePicker = true
+
+        case .notDetermined:
+            PHPhotoLibrary.requestAuthorization(for: .readWrite) { status in
+                DispatchQueue.main.async {
+                    if status == .authorized || status == .limited {
+                        self.selectedSourceType = .photoLibrary
+                        self.isShowingImagePicker = true
+                    } else {
+                        self.isShowingPhotoLibraryAlert = true
+                    }
+                }
+            }
+
+        case .denied, .restricted:
+            DispatchQueue.main.async {
+                self.isShowingPhotoLibraryAlert = true
+            }
+
+        @unknown default:
+            break
+        }
+    }
+    
     @ViewBuilder
     private func createHeader() -> some View {
         ScrollView(.vertical, showsIndicators: false) {
@@ -192,77 +263,6 @@ struct HomeView: View {
             createScanButton()
         }
         .padding(.horizontal)
-    }
-    
-    private func handleImageSource(_ source: ImageSource) {
-        switch source {
-        case .camera:
-            checkCameraPermissionAndOpen()
-        case .gallery:
-            checkPhotoLibraryPermissionAndOpen()
-        case .files:
-            break
-        }
-    }
-
-    private func checkCameraPermissionAndOpen() {
-        let cameraAuthorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
-
-        switch cameraAuthorizationStatus {
-        case .authorized:
-            selectedSourceType = .camera
-            isShowingImagePicker = true
-
-        case .notDetermined:
-            AVCaptureDevice.requestAccess(for: .video) { granted in
-                DispatchQueue.main.async {
-                    if granted {
-                        self.selectedSourceType = .camera
-                        self.isShowingImagePicker = true
-                    } else {
-                        self.isShowingCameraAlert = true
-                    }
-                }
-            }
-
-        case .denied, .restricted:
-            DispatchQueue.main.async {
-                self.isShowingCameraAlert = true
-            }
-
-        @unknown default:
-            break
-        }
-    }
-
-    private func checkPhotoLibraryPermissionAndOpen() {
-        let photoAuthorizationStatus = PHPhotoLibrary.authorizationStatus(for: .readWrite)
-
-        switch photoAuthorizationStatus {
-        case .authorized, .limited:
-            selectedSourceType = .photoLibrary
-            isShowingImagePicker = true
-
-        case .notDetermined:
-            PHPhotoLibrary.requestAuthorization(for: .readWrite) { status in
-                DispatchQueue.main.async {
-                    if status == .authorized || status == .limited {
-                        self.selectedSourceType = .photoLibrary
-                        self.isShowingImagePicker = true
-                    } else {
-                        self.isShowingPhotoLibraryAlert = true
-                    }
-                }
-            }
-
-        case .denied, .restricted:
-            DispatchQueue.main.async {
-                self.isShowingPhotoLibraryAlert = true
-            }
-
-        @unknown default:
-            break
-        }
     }
 }
 

@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		5492CAE12DD62C9C00D11D4F /* CropViewController in Frameworks */ = {isa = PBXBuildFile; productRef = 5492CAE02DD62C9C00D11D4F /* CropViewController */; };
+		5492CAE32DD62C9C00D11D4F /* TOCropViewController in Frameworks */ = {isa = PBXBuildFile; productRef = 5492CAE22DD62C9C00D11D4F /* TOCropViewController */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		54B158EA2D5A9C68005D0FD1 /* DermaScan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DermaScan.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +28,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5492CAE32DD62C9C00D11D4F /* TOCropViewController in Frameworks */,
+				5492CAE12DD62C9C00D11D4F /* CropViewController in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +72,8 @@
 			);
 			name = DermaScan;
 			packageProductDependencies = (
+				5492CAE02DD62C9C00D11D4F /* CropViewController */,
+				5492CAE22DD62C9C00D11D4F /* TOCropViewController */,
 			);
 			productName = DermaScan;
 			productReference = 54B158EA2D5A9C68005D0FD1 /* DermaScan.app */;
@@ -94,6 +103,9 @@
 			);
 			mainGroup = 54B158E12D5A9C68005D0FD1;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				5492CADF2DD62C9C00D11D4F /* XCRemoteSwiftPackageReference "TOCropViewController" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 54B158EB2D5A9C68005D0FD1 /* Products */;
 			projectDirPath = "";
@@ -268,7 +280,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1;
+				MARKETING_VERSION = 0.11;
 				PRODUCT_BUNDLE_IDENTIFIER = a4rek0.DermaScan;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -305,7 +317,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1;
+				MARKETING_VERSION = 0.11;
 				PRODUCT_BUNDLE_IDENTIFIER = a4rek0.DermaScan;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -340,6 +352,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		5492CADF2DD62C9C00D11D4F /* XCRemoteSwiftPackageReference "TOCropViewController" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/TimOliver/TOCropViewController";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.7.4;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		5492CAE02DD62C9C00D11D4F /* CropViewController */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5492CADF2DD62C9C00D11D4F /* XCRemoteSwiftPackageReference "TOCropViewController" */;
+			productName = CropViewController;
+		};
+		5492CAE22DD62C9C00D11D4F /* TOCropViewController */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5492CADF2DD62C9C00D11D4F /* XCRemoteSwiftPackageReference "TOCropViewController" */;
+			productName = TOCropViewController;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 54B158E22D5A9C68005D0FD1 /* Project object */;
 }

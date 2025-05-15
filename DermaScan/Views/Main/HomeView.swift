@@ -22,6 +22,8 @@ struct HomeView: View {
     @State private var isShowingAIWorkView = false
     @State private var isShowingResultView = false
     
+    @State private var diagnosisResult: DiagnosisResult? = nil
+    
     var body: some View {
         NavigationStack {
             VStack {
@@ -51,24 +53,36 @@ struct HomeView: View {
             }
             .fullScreenCover(isPresented: $isShowingScanEditor) {
                 if let selectedImage = imageEditingModel.originalImage {
-                    ImageEditingView(image: selectedImage) { croppedImage in
-                        if let croppedImage = croppedImage {
-                            self.imageEditingModel.originalImage = croppedImage
-                            self.isShowingAIWorkView = true
+                    CropViewControllerWrapper(image: selectedImage) { croppedImage in
+                        if let cropped = croppedImage {
+                            self.imageEditingModel.originalImage = cropped
+                            self.isShowingScanEditor = false
+
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                self.isShowingAIWorkView = true
+                            }
+                        } else {
+
+                            self.isShowingScanEditor = false
                         }
                     }
                 }
             }
             .fullScreenCover(isPresented: $isShowingAIWorkView, content: {
                 if let croppedImage = imageEditingModel.originalImage {
-                    AnalyzingView(image: croppedImage) { _ in
+                    AnalyzingView(image: croppedImage) { _, result  in
+                        self.diagnosisResult = result
                         self.isShowingResultView = true
                     }
                 }
             })
             .fullScreenCover(isPresented: $isShowingResultView, content: {
                 if let croppedImage = imageEditingModel.originalImage {
-                    ResultView(image: croppedImage, diagnosis: DiagnosisResult(label: "Акне", riskLevel: .looking))
+                    if let result = diagnosisResult {
+                        ResultView(image: croppedImage, diagnosis: result)
+                    } else {
+                        ResultView(image: croppedImage, diagnosis: DiagnosisResult(label: "Неизвестно", riskLevel: .looking))
+                    }
                 }
             })
             .fullScreenCover(isPresented: $isShowingImagePicker) {

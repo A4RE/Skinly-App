@@ -21,10 +21,8 @@ struct ResultView: View {
                     createTitle()
                     createScrollView(geo: geo)
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-                createButtonsStack(geo: geo)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
             }
+            .frame(maxHeight: .infinity, alignment: .top)
             .padding(.horizontal)
             .background(Color.appBackground)
         }
@@ -79,10 +77,11 @@ struct ResultView: View {
         if geo.size.height < 737 {
             ScrollView(.vertical, showsIndicators: false) {
                 createInfoContainer(geo: geo)
-                    .padding(.bottom, 150)
+                createButtonsStack(geo: geo)
             }
         } else {
             createInfoContainer(geo: geo)
+            createButtonsStack(geo: geo)
         }
     }
     

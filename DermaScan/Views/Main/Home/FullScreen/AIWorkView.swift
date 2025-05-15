@@ -11,8 +11,9 @@ struct AnalyzingView: View {
     @State private var yPosition: CGFloat = 0
     @State private var isDownAnimation: Bool = false
     @State private var blurRadius: CGFloat = 11
+    @State private var pendingResult: DiagnosisResult? = nil
     
-    var onAnalizeFinished: (UIImage?) -> Void
+    var onAnalizeFinished: (UIImage?, DiagnosisResult) -> Void
 
     var body: some View {
         GeometryReader { geo in
@@ -65,6 +66,19 @@ struct AnalyzingView: View {
 
                 moveRectangle(geo: geo)
                 
+                
+                if let analyzer = SkinAnalyzer() {
+                    analyzer.analyze(image: image) { label, _ in
+                        let result = DiagnosisResult(label: label ?? "Неизвестно", riskLevel: .looking)
+                        DispatchQueue.main.async {
+                            self.pendingResult = result
+                        }
+                    }
+                } else {
+                    self.pendingResult = DiagnosisResult(label: "Ошибка модели", riskLevel: .looking)
+                }
+                
+                
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                     withAnimation {
                         analysisStatusText = "Анализируем изображение"
@@ -101,7 +115,8 @@ struct AnalyzingView: View {
                 }
                 DispatchQueue.main.asyncAfter(deadline: .now() + 13.5) {
                     isAnalysisComplete = true
-                    onAnalizeFinished(image)
+//                    onAnalizeFinished(image)
+                    onAnalizeFinished(image, pendingResult ?? DiagnosisResult(label: "Нет ответа", riskLevel: .looking))
                     dismiss()
                     
                 }
@@ -124,8 +139,4 @@ struct AnalyzingView: View {
             }
         }
     }
-}
-
-#Preview {
-    AnalyzingView(image: UIImage(named: "randomImg")!, onAnalizeFinished: { _ in })
 }

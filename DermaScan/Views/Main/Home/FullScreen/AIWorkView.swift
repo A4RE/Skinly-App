@@ -53,6 +53,7 @@ struct AnalyzingView: View {
                         ProgressView()
                             .progressViewStyle(CircularProgressViewStyle(tint: .black))
                     }
+                    .padding(.bottom)
                 }
                 
             }

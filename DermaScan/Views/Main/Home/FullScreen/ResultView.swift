@@ -21,7 +21,7 @@ struct ResultView: View {
                     createTitle()
                     createScrollView(geo: geo)
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                 createButtonsStack(geo: geo)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
             }
@@ -88,39 +88,43 @@ struct ResultView: View {
     
     @ViewBuilder
     private func createInfoContainer(geo: GeometryProxy) -> some View {
-        VStack(alignment: .leading, spacing: 18) {
+        VStack(spacing: 18) {
             Image(uiImage: image)
                 .resizable()
-                .frame(width: geo.size.height * 0.48, height: geo.size.height * 0.48)
+                .frame(width: geo.size.height * 0.48, height: geo.size.height * 0.48, alignment: .center)
                 .clipShape(RoundedRectangle(cornerRadius: 16))
             
-            HStack(alignment: .center) {
-                Text("Диагноз: ")
-                    .font(.headline)
-                    .foregroundColor(Color.appPrimaryText)
+            VStack(alignment: .leading) {
+                HStack(alignment: .center) {
+                    Text("Диагноз: ")
+                        .font(.headline)
+                        .foregroundColor(Color.appPrimaryText)
+                    
+                    Text("\(diagnosis.label)")
+                        .font(.headline)
+                        .foregroundColor(diagnosis.riskLevel.color)
+                    
+                    Image(systemName: diagnosis.riskLevel.icon)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 20)
+                        .foregroundColor(diagnosis.riskLevel.color)
+                }
                 
-                Text("\(diagnosis.label)")
-                    .font(.headline)
-                    .foregroundColor(diagnosis.riskLevel.color)
-                
-                Image(systemName: diagnosis.riskLevel.icon)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(height: 20)
-                    .foregroundColor(diagnosis.riskLevel.color)
+                HStack(alignment: .top) {
+                    Text("Рекомендация: ")
+                        .font(.headline)
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(Color.appPrimaryText)
+                    Text("\(diagnosis.riskLevel.rawValue)")
+                        .font(.headline)
+                        .multilineTextAlignment(.leading)
+                        .foregroundColor(Color.appPrimaryText)
+                    
+                }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
             
-            HStack(alignment: .top) {
-                Text("Рекомендация: ")
-                    .font(.headline)
-                    .multilineTextAlignment(.center)
-                    .foregroundColor(Color.appPrimaryText)
-                Text("\(diagnosis.riskLevel.rawValue)")
-                    .font(.headline)
-                    .multilineTextAlignment(.leading)
-                    .foregroundColor(Color.appPrimaryText)
-                
-            }
             
             Text("⚠️ Внимание: Результаты анализа являются предварительными. Для постановки точного диагноза обязательно обратитесь к квалифицированному врачу.")
                 .font(.subheadline)

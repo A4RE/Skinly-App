@@ -13,7 +13,6 @@ struct ResultView: View {
     let diagnosis: DiagnosisResult
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
-    @State private var isShowSavingSheet: Bool = false
     
     var body: some View {
         GeometryReader { geo in
@@ -28,17 +27,6 @@ struct ResultView: View {
             }
             .padding(.horizontal)
             .background(Color.appBackground)
-            .sheet(isPresented: $isShowSavingSheet) {
-                SaveSheet { isNewCase in
-                    if isNewCase {
-                        saveNewScanCase(context: modelContext)
-                    } else {
-//                        saveResult(context: modelContext)
-                    }
-                    NotificationCenter.default.post(name: .didAddNewScan, object: nil)
-                    dismiss()
-                }
-            }
         }
     }
     
@@ -147,7 +135,9 @@ struct ResultView: View {
     private func createButtonsStack(geo: GeometryProxy) -> some View {
         VStack(spacing: 16) {
             Button(action: {
-                isShowSavingSheet = true
+                saveNewScanCase(context: modelContext)
+                NotificationCenter.default.post(name: .didAddNewScan, object: nil)
+                dismiss()
             }, label: {
                 Text("Сохранить результат")
                     .font(.headline)

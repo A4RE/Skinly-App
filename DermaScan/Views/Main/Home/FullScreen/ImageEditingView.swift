@@ -67,13 +67,14 @@ struct ImageEditingView: View {
                     .font(.headline)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.red)
+                    .background(Color.appSecondaryText)
                     .foregroundColor(.white)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
                     .padding(.horizontal)
             }
         }
         .frame(maxHeight: .infinity, alignment: .bottom)
+        .padding(.bottom)
     }
     
     @ViewBuilder

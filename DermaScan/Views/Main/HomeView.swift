@@ -27,6 +27,7 @@ struct HomeView: View {
             VStack {
                 if historyViewModel.scanCases.count == 0 {
                     createEmptyListView()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                 } else {
                     createHeader()
                     Spacer()
@@ -41,7 +42,7 @@ struct HomeView: View {
             .onReceive(NotificationCenter.default.publisher(for: .didAddNewScan)) { _ in
                 historyViewModel.loadCases(context: modelContext)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .background(Color.appBackground)
             .sheet(isPresented: $viewModel.showSourceSelectionSheet) {
                 SourceSelectionSheet(viewModel: viewModel) { source in
@@ -108,6 +109,7 @@ struct HomeView: View {
                 Text("Пожалуйста, разрешите доступ к библиотеке фотографий в настройках устройства.")
             }
             .ignoresSafeArea(.all)
+            .toolbarBackground(.white, for: .navigationBar)
         }
     }
     
@@ -184,26 +186,28 @@ struct HomeView: View {
     
     @ViewBuilder
     private func createHeader() -> some View {
-        ScrollView(.vertical, showsIndicators: false) {
-            VStack(alignment: .leading) {
-                StatisticsView(statistics: profileViewModel.statistics)
-                    .shadow(color: Color.black.opacity(0.2), radius: 5, x: 0, y: 2)
-                createHistoryButton()
-                    .padding(.vertical, 10)
-                Text("Последние сканирования")
-                    .font(.headline)
-                    .multilineTextAlignment(.leading)
-                    .foregroundStyle(Color.appPrimaryText)
-                ForEach(historyViewModel.scanCases.prefix(5)) { scanCase in
-                    if let scan = scanCase.scans.last {
-                        ScanItemView(scan: scan)
+        GeometryReader { geometry in
+            ScrollView(.vertical, showsIndicators: false) {
+                VStack(alignment: .leading) {
+                    StatisticsView(statistics: profileViewModel.statistics)
+                        .shadow(color: Color.black.opacity(0.2), radius: 5, x: 0, y: 2)
+                    createHistoryButton()
+                        .padding(.vertical, 10)
+                    Text("Последние сканирования")
+                        .font(.headline)
+                        .multilineTextAlignment(.leading)
+                        .foregroundStyle(Color.appPrimaryText)
+                    ForEach(historyViewModel.scanCases.prefix(5)) { scanCase in
+                        if let scan = scanCase.scans.last {
+                            ScanItemView(scan: scan)
+                        }
                     }
+                    .padding(.vertical, 5)
                 }
-                .padding(.vertical, 5)
+                .padding(.horizontal)
+                .padding(.top, geometry.size.height * 0.13)
             }
-            .padding(.horizontal)
         }
-        .padding(.top, 120)
     }
     
     @ViewBuilder

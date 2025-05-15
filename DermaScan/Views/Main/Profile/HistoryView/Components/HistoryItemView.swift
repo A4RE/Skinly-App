@@ -33,11 +33,6 @@ struct HistoryItemView: View {
                     .foregroundColor(Color.appSecondaryText)
             }
             Spacer()
-            
-            Image(systemName: "chevron.right")
-                .foregroundColor(.black)
-                .font(.system(size: 14, weight: .semibold))
-                .padding(.trailing)
         }
         .background(Color.appBackground)
         .clipShape(RoundedRectangle(cornerRadius: 12))

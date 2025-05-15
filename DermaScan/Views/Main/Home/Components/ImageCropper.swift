@@ -136,26 +136,30 @@ struct ImageCropper: UIViewRepresentable {
         
         @objc func handleDrag(gesture: UIPanGestureRecognizer) {
             guard let cropView = gesture.view else { return }
-            
-            let translation = gesture.translation(in: cropView.superview)
-            
+            let superview = cropView.superview!
+
+            let translation = gesture.translation(in: superview)
+
             var newCenter = CGPoint(
-                x: cropView.center.x + translation.x,
-                y: cropView.center.y + translation.y
+              x: cropView.center.x + translation.x,
+              y: cropView.center.y + translation.y
             )
-            
-            let minX = (containerSize.width - imageViewSize.width) / 2 + cropView.bounds.width/2
-            let maxX = containerSize.width - (containerSize.width - imageViewSize.width)/2 - cropView.bounds.width/2
-            let minY = (containerSize.height - imageViewSize.height)/2 + cropView.bounds.height/2
-            let maxY = containerSize.height - (containerSize.height - imageViewSize.height)/2 - cropView.bounds.height/2
-            
+
+            let halfW = cropView.bounds.width  / 2
+            let halfH = cropView.bounds.height / 2
+            let minX = halfW
+            let maxX = containerSize.width  - halfW
+            let minY = halfH
+            let maxY = containerSize.height - halfH
+
             newCenter.x = max(minX, min(newCenter.x, maxX))
             newCenter.y = max(minY, min(newCenter.y, maxY))
-            
+
             cropView.center = newCenter
+
             parent.updateCropRect(cropView.frame, coordinator: self)
-            
-            gesture.setTranslation(.zero, in: cropView.superview)
+
+            gesture.setTranslation(.zero, in: superview)
         }
         
         @objc func handlePinch(_ gesture: UIPinchGestureRecognizer) {

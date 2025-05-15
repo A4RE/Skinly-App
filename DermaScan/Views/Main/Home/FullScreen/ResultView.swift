@@ -10,7 +10,7 @@ struct DiagnosisResult1 {
 
 struct ResultView: View {
     let image: UIImage
-    let diagnosis: DiagnosisResult
+    @State var diagnosis: DiagnosisResult
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     
@@ -25,6 +25,9 @@ struct ResultView: View {
             .frame(maxHeight: .infinity, alignment: .top)
             .padding(.horizontal)
             .background(Color.appBackground)
+            .onAppear {
+                diagnosis = renameDiagnosis(diagnos: diagnosis)
+            }
         }
     }
     
@@ -62,6 +65,25 @@ struct ResultView: View {
             print("Новый ScanCase успешно сохранён с одним Scan.")
         } catch {
             print("Ошибка при сохранении ScanCase: \(error.localizedDescription)")
+        }
+    }
+    
+    private func renameDiagnosis(diagnos: DiagnosisResult) -> DiagnosisResult {
+        switch diagnos.label {
+        case "benign_nevus":
+            return DiagnosisResult(label: "Доброкачественный невус", riskLevel: .safe)
+        case "benign_keratosis":
+            return DiagnosisResult(label: "Доброкачественный кератоз", riskLevel: .safe)
+        case "malignant_carcinoma":
+            return DiagnosisResult(label: "Злокачественная карцинома", riskLevel: .dangerous)
+        case "malignant_melanoma":
+            return DiagnosisResult(label: "Меланома", riskLevel: .dangerous)
+        case "benign_other":
+            return DiagnosisResult(label: "Прочее доброкачественное", riskLevel: .safe)
+        case "malignant_other":
+            return DiagnosisResult(label: "Прочее злокачественное", riskLevel: .dangerous)
+        default:
+            return DiagnosisResult(label: "Неизвестно", riskLevel: .looking)
         }
     }
     

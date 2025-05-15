@@ -62,7 +62,6 @@ struct HomeView: View {
                                 self.isShowingAIWorkView = true
                             }
                         } else {
-
                             self.isShowingScanEditor = false
                         }
                     }
@@ -211,7 +210,9 @@ struct HomeView: View {
                         .font(.headline)
                         .multilineTextAlignment(.leading)
                         .foregroundStyle(Color.appPrimaryText)
-                    ForEach(historyViewModel.scanCases.prefix(5)) { scanCase in
+                    ForEach(historyViewModel.scanCases
+                        .sorted(by: {($0.scans.last?.date ?? .distantPast) > ($1.scans.last?.date ?? .distantPast)}).prefix(5)
+                    ) { scanCase in
                         if let scan = scanCase.scans.last {
                             ScanItemView(scan: scan)
                         }

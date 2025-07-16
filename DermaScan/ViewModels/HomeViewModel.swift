@@ -8,4 +8,6 @@ enum ScanMode {
 final class HomeViewModel: ObservableObject {
     @Published var showSourceSelectionSheet: Bool = false
     @Published var selectedScanMode: ScanMode? = nil
+    
+    @Published var diagnosisResult: DiagnosisResult? = nil
 }

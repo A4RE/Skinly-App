@@ -4,7 +4,6 @@ import CropViewController
 struct CropViewControllerWrapper: UIViewControllerRepresentable {
     var image: UIImage
     var onCropped: (UIImage?) -> Void
-    @Environment(\.dismiss) private var dismiss
 
     func makeCoordinator() -> Coordinator {
         Coordinator(self)

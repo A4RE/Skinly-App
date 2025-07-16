@@ -13,7 +13,7 @@ struct HistoryListView: View {
         .navigationTitle("")
         .toolbar {
             ToolbarItem(placement: .principal) {
-                Text("История сканирований")
+                Text("scan_history")
                     .font(.headline.bold())
                     .foregroundColor(Color.appPrimaryText)
             }
@@ -30,13 +30,13 @@ struct HistoryListView: View {
     private func createListView() -> some View {
         ScrollView(.vertical, showsIndicators: false) {
             VStack(spacing: 10) {
-                ForEach(viewModel.scanCases) { scanCase in
+                ForEach(viewModel.scanCases.sorted(by: {$0.date > $1.date })) { scanCase in
                     HistoryItemView(scanCase: scanCase)
                         .background(Color.appBackground)
+                        .padding(.horizontal)
                 }
             }
         }
         .background(Color.appBackground)
-        .padding(.horizontal)
     }
 }

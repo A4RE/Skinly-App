@@ -25,15 +25,20 @@ struct HistoryItemView: View {
             }
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(scanCase.latestDiagnosis ?? "Без диагноза")
+                Text(LocalizedStringKey(scanCase.latestDiagnosis))
                     .font(.headline)
                     .foregroundColor(Color.appPrimaryText)
                 Text(scanCase.latestDateFormatted)
                     .font(.subheadline)
                     .foregroundColor(Color.appSecondaryText)
+                Text(scanCase.latestDiagonsis)
+                    .font(.headline)
+                    .foregroundStyle(scanCase.scans.last?.diagnosis.riskLevel.color ?? .gray)
             }
             Spacer()
         }
+        .padding(.horizontal, 8)
+        .padding(.vertical, 5)
         .background(Color.appBackground)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .shadow(color: Color.black.opacity(0.2), radius: 3, x: 0, y: 3)

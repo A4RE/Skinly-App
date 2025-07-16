@@ -1,0 +1,43 @@
+"recent_scans" = "Последние сканирования";
+"scan" = "Сканировать";
+"scan_history" = "История сканирований";
+"empty_scan_history" = "История сканирований пуста";
+"scan_instruction" = "Сделайте снимок кожи для проведения анализа на кожные заболевания, включая невус и меланому.";
+
+"total_scans" = "Всего сканирований";
+"safety_scans" = "Безопасных";
+"looking_scans" = "Наблюдение";
+"warning_scans" = "Опасных";
+
+"choose_source" = "Выберите источник";
+"source_gallery" = "Галерея";
+"source_camera" = "Камера";
+"source_files" = "Файлы";
+"close" = "Закрыть";
+
+"melanoma" = "Меланома";
+"nevus" = "Невус";
+"actinic_keratosis" = "Актинический кератоз";
+"basal_cell_carcinoma" = "Базальноклеточная карцинома";
+"eczema_dermatitis" = "Экзема / Дерматит";
+"infectious" = "Инфекционное поражение";
+"psoriasis" = "Псориаз";
+"seborrheic_keratosis" = "Себорейный кератоз";
+"squamous_cell_carcinoma" = "Плоскоклеточный рак кожи";
+"unknown" = "Неизвестно";
+"model_error" = "Ошибка модели";
+"sending_image" = "Передаем изображение";
+"analyzing_image" = "Анализируем изображение";
+"processing_image" = "Обрабатываем изображение";
+"getting_result" = "Получаем результат";
+
+"result_title" = "Результат";
+"result_diagnosis" = "Диагноз: ";
+"result_recommendation" = "Рекомендация: ";
+"risklevel_safe" = "Не беспокойтесь";
+"risklevel_looking" = "Наблюдайте";
+"risklevel_dangerous" = "Срочно обратитесь к специалисту";
+"analysis_warning" = "⚠️ Внимание: Результаты анализа являются предварительными. Для постановки точного диагноза обязательно обратитесь к квалифицированному врачу.";
+"save_result" = "Сохранить результат";
+"make_new_scan" = "Новое сканирование";
+

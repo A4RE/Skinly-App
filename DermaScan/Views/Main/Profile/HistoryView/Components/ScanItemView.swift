@@ -13,6 +13,7 @@ struct ScanItemView: View {
                     .frame(width: 60, height: 60)
                     .clipped()
                     .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .padding(.leading, 8)
             } else {
                 RoundedRectangle(cornerRadius: 8)
                     .fill(Color.appSecondaryBackground)
@@ -21,20 +22,17 @@ struct ScanItemView: View {
                         Image(systemName: "photo")
                             .foregroundColor(.gray)
                     )
+                    .padding(.leading, 8)
             }
-
-            Spacer()
-                .frame(width: 3)
             VStack(alignment: .leading, spacing: 4) {
-                HStack {
-                    Text(scan.diagnosis.label)
-                        .font(.headline)
-                        .foregroundColor(.appPrimaryText)
-                    Text(scan.date.formatted(.dateTime.day().month().year()))
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
-                }
-                Text(scan.diagnosis.riskLevel.rawValue)
+                Text(LocalizedStringKey(scan.diagnosis.label))
+                    .font(.headline)
+                    .foregroundColor(.appPrimaryText)
+                    .lineLimit(1)
+                Text(scan.date.formatted(.dateTime.day().month().year()))
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+                Text(scan.diagnosis.riskLevel.localized)
                     .font(.headline)
                     .foregroundColor(scan.diagnosis.riskLevel.color)
             }
@@ -47,4 +45,8 @@ struct ScanItemView: View {
         .shadow(color: Color.black.opacity(0.2), radius: 3, x: 0, y: 3)
 
     }
+}
+
+#Preview {
+    ScanItemView(scan: Scan(date: Date(), imageData: "randomImg", diagnosisLabel: "Невус", riskLevel: .safe))
 }

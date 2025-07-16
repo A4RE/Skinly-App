@@ -1,13 +1,6 @@
 import SwiftUI
 import SwiftData
 
-struct DiagnosisResult1 {
-    let title: String
-    let percentage: Int
-    let recommendation: String
-    let color: Color
-}
-
 struct ResultView: View {
     let image: UIImage
     @State var diagnosis: DiagnosisResult
@@ -25,9 +18,6 @@ struct ResultView: View {
             .frame(maxHeight: .infinity, alignment: .top)
             .padding(.horizontal)
             .background(Color.appBackground)
-            .onAppear {
-                diagnosis = renameDiagnosis(diagnos: diagnosis)
-            }
         }
     }
     
@@ -68,28 +58,9 @@ struct ResultView: View {
         }
     }
     
-    private func renameDiagnosis(diagnos: DiagnosisResult) -> DiagnosisResult {
-        switch diagnos.label {
-        case "benign_nevus":
-            return DiagnosisResult(label: "Доброкачественный невус", riskLevel: .safe)
-        case "benign_keratosis":
-            return DiagnosisResult(label: "Доброкачественный кератоз", riskLevel: .safe)
-        case "malignant_carcinoma":
-            return DiagnosisResult(label: "Злокачественная карцинома", riskLevel: .dangerous)
-        case "malignant_melanoma":
-            return DiagnosisResult(label: "Меланома", riskLevel: .dangerous)
-        case "benign_other":
-            return DiagnosisResult(label: "Прочее доброкачественное", riskLevel: .safe)
-        case "malignant_other":
-            return DiagnosisResult(label: "Прочее злокачественное", riskLevel: .dangerous)
-        default:
-            return DiagnosisResult(label: "Неизвестно", riskLevel: .looking)
-        }
-    }
-    
     @ViewBuilder
     private func createTitle() -> some View {
-        Text("Результат")
+        Text("result_title")
             .font(.largeTitle.bold())
             .foregroundColor(Color.appPrimaryText)
     }
@@ -99,11 +70,9 @@ struct ResultView: View {
         if geo.size.height < 737 {
             ScrollView(.vertical, showsIndicators: false) {
                 createInfoContainer(geo: geo)
-                createButtonsStack(geo: geo)
             }
         } else {
             createInfoContainer(geo: geo)
-            createButtonsStack(geo: geo)
         }
     }
     
@@ -117,11 +86,11 @@ struct ResultView: View {
             
             VStack(alignment: .leading) {
                 HStack(alignment: .center) {
-                    Text("Диагноз: ")
+                    Text("result_diagnosis")
                         .font(.headline)
                         .foregroundColor(Color.appPrimaryText)
                     
-                    Text("\(diagnosis.label)")
+                    Text(LocalizedStringKey(diagnosis.label))
                         .font(.headline)
                         .foregroundColor(diagnosis.riskLevel.color)
                     
@@ -132,27 +101,22 @@ struct ResultView: View {
                         .foregroundColor(diagnosis.riskLevel.color)
                 }
                 
-                HStack(alignment: .top) {
-                    Text("Рекомендация: ")
-                        .font(.headline)
-                        .multilineTextAlignment(.center)
-                        .foregroundColor(Color.appPrimaryText)
-                    Text("\(diagnosis.riskLevel.rawValue)")
-                        .font(.headline)
-                        .multilineTextAlignment(.leading)
-                        .foregroundColor(Color.appPrimaryText)
-                    
-                }
+                (
+                    Text("result_recommendation") + Text(diagnosis.riskLevel.localized)
+                )
+                .font(.headline)
+                .multilineTextAlignment(.leading)
+                .foregroundColor(Color.appPrimaryText)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             
             
-            Text("⚠️ Внимание: Результаты анализа являются предварительными. Для постановки точного диагноза обязательно обратитесь к квалифицированному врачу.")
+            Text("analysis_warning")
                 .font(.subheadline)
                 .foregroundColor(.appSecondaryText)
                 .multilineTextAlignment(.center)
                 .padding(.vertical, 4)
-                .frame(maxWidth: .infinity, alignment: .center)
+            createButtonsStack(geo: geo)
         }
     }
     
@@ -164,7 +128,7 @@ struct ResultView: View {
                 NotificationCenter.default.post(name: .didAddNewScan, object: nil)
                 dismiss()
             }, label: {
-                Text("Сохранить результат")
+                Text("save_result")
                     .font(.headline)
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
@@ -177,7 +141,7 @@ struct ResultView: View {
             Button(action: {
                 dismiss()
             }, label: {
-                Text("Новое сканирование")
+                Text("make_new_scan")
                     .font(.headline)
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
@@ -188,7 +152,7 @@ struct ResultView: View {
                     )
             })
         }
-        .padding(.vertical)
+        .padding(.top)
         .background(Color.appBackground)
     }
 }
@@ -198,9 +162,10 @@ struct ResultView_Previews: PreviewProvider {
         ResultView(
             image: UIImage(named: "randomImg") ?? UIImage(),
             diagnosis: DiagnosisResult(
-                label: "Мелонома",
+                label: "melanoma",
                 riskLevel: .looking
             )
         )
+        .environment(\.locale, Locale(identifier: "en"))
     }
 }

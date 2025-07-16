@@ -7,18 +7,24 @@ struct StatisticsView: View {
         HStack {
             VStack(alignment: .leading) {
                 StatisticksInfoSubview(
-                    name: "Всего сканирований",
+                    name: "total_scans",
                     image: "magnifyingglass",
                     value: statistics.totalScans
                 )
                 StatisticksInfoSubview(
-                    name: "Безопасных",
+                    name: "safety_scans",
                     image: "checkmark.seal.fill",
                     value: statistics.safeScans,
                     percentage: percentage(statistics.safeScans)
                 )
                 StatisticksInfoSubview(
-                    name: "Опасных",
+                    name: "looking_scans",
+                    image: "exclamationmark.triangle.fill",
+                    value: statistics.monitorScans,
+                    percentage: percentage(statistics.monitorScans)
+                )
+                StatisticksInfoSubview(
+                    name: "warning_scans",
                     image: "xmark.seal.fill",
                     value: statistics.dangerousScans,
                     percentage: percentage(statistics.dangerousScans)

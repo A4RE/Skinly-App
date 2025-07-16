@@ -5,13 +5,13 @@ struct AnalyzingView: View {
     @Environment(\.dismiss) private var dismiss
     
     let image: UIImage
-    @State private var isAnalysisComplete = false
-    @State private var analysisStatusText = "Передаем изображение"
+    @State private var analysisStatusText: LocalizedStringKey = "sending_image"
     @State private var progress: CGFloat = 0
     @State private var yPosition: CGFloat = 0
     @State private var isDownAnimation: Bool = false
     @State private var blurRadius: CGFloat = 11
     @State private var pendingResult: DiagnosisResult? = nil
+    @State private var hasStartedAnalysis = false
     
     var onAnalizeFinished: (UIImage?, DiagnosisResult) -> Void
 
@@ -40,7 +40,7 @@ struct AnalyzingView: View {
                         RoundedRectangle(cornerRadius: 12)
                             .fill(Color.blue)
                             .frame(width: progress, height: 20)
-                            .animation(.linear(duration: 13.5), value: progress)
+                            .animation(.linear(duration: 2.0), value: progress)
                     }
                     .padding(.horizontal, 20)
 
@@ -61,67 +61,100 @@ struct AnalyzingView: View {
             .frame(width: geo.size.width, height: geo.size.height)
             .background(Color.appBackground)
             .onAppear {
+                
+                guard !hasStartedAnalysis else { return }
+                hasStartedAnalysis = true
+                
                 yPosition = geo.size.height * 0.635
                 progress = UIScreen.main.bounds.width - 40
 
                 moveRectangle(geo: geo)
                 
-                
                 if let analyzer = SkinAnalyzer() {
-                    analyzer.analyze(image: image) { label, _ in
-                        let result = DiagnosisResult(label: label ?? "Неизвестно", riskLevel: .looking)
+                    analyzer.analyze(image: image) { label, rawScores in
+                        let probabilities = softmax(rawScores)
+
+                        if let topLabel = label, let topProb = probabilities[topLabel] {
+                            let topPercent = Int(topProb * 100)
+                            print("🏆 Top result: \(topLabel) — \(topPercent)%")
+                        } else {
+                            print("🏆 Top result: неизвестно")
+                        }
+
+                        print("📊 All probabilities:")
+                        for (cls, prob) in probabilities
+                            .sorted(by: { $0.value > $1.value }) {
+                            let percent = Int(prob * 100)
+                            print("  • \(cls): \(percent)%")
+                        }
+                        let result = DiagnosisResult(label: label ?? "unknown",
+                                                     riskLevel: .looking)
                         DispatchQueue.main.async {
-                            self.pendingResult = result
+                            self.pendingResult = renameDiagnosis(diagnos: result)
                         }
                     }
+                    
                 } else {
-                    self.pendingResult = DiagnosisResult(label: "Ошибка модели", riskLevel: .looking)
+                    self.pendingResult = DiagnosisResult(label: "model_error",
+                                                         riskLevel: .looking)
                 }
                 
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    withAnimation {
+                        analysisStatusText = "analyzing_image"
+                    }
+                }
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                    withAnimation {
+                        analysisStatusText = "processing_image"
+                    }
+                }
                 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                     withAnimation {
-                        analysisStatusText = "Анализируем изображение"
+                        analysisStatusText = "getting_result"
                     }
                 }
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
-                    withAnimation {
-                        analysisStatusText = "Предварительно обрабатываем"
-                    }
-                }
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 5.5) {
-                    withAnimation {
-                        analysisStatusText = "Обрабатываем изображение"
-                    }
-                }
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 7.5) {
-                    withAnimation {
-                        analysisStatusText = "Получаем результат"
-                    }
-                }
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 9.5) {
-                    withAnimation {
-                        analysisStatusText = "Почти готово"
-                    }
-                }
-                DispatchQueue.main.asyncAfter(deadline: .now() + 11.5) {
-                    withAnimation {
-                        analysisStatusText = "Завершаем"
-                    }
-                }
-                DispatchQueue.main.asyncAfter(deadline: .now() + 13.5) {
-                    isAnalysisComplete = true
-//                    onAnalizeFinished(image)
-                    onAnalizeFinished(image, pendingResult ?? DiagnosisResult(label: "Нет ответа", riskLevel: .looking))
-                    dismiss()
+
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                    onAnalizeFinished(image, pendingResult ?? DiagnosisResult(label: "unkown", riskLevel: .looking))
                     
                 }
             }
         }
+    }
+    
+    private func renameDiagnosis(diagnos: DiagnosisResult) -> DiagnosisResult {
+        switch diagnos.label {
+        case "actinic_keratosis":
+            return DiagnosisResult(label: diagnos.label, riskLevel: .dangerous)
+        case "basal_cell_carcinoma":
+            return DiagnosisResult(label: diagnos.label, riskLevel: .dangerous)
+        case "eczema_dermatitis":
+            return DiagnosisResult(label: diagnos.label, riskLevel: .looking)
+        case "infectious":
+            return DiagnosisResult(label: diagnos.label, riskLevel: .looking)
+        case "melanoma":
+            return DiagnosisResult(label: diagnos.label, riskLevel: .dangerous)
+        case "nevus":
+            return DiagnosisResult(label: diagnos.label, riskLevel: .safe)
+        case "psoriasis":
+            return DiagnosisResult(label: diagnos.label, riskLevel: .looking)
+        case "seborrheic_keratosis":
+            return DiagnosisResult(label: diagnos.label, riskLevel: .safe)
+        case "squamous_cell_carcinoma":
+            return DiagnosisResult(label: diagnos.label, riskLevel: .dangerous)
+        default:
+            return DiagnosisResult(label: diagnos.label, riskLevel: .looking)
+        }
+    }
+    
+    func softmax(_ logits: [String: Float]) -> [String: Float] {
+        let exps = logits.mapValues { Foundation.exp($0) }
+        let sumExp = exps.values.reduce(0, +)
+        return exps.mapValues { $0 / sumExp }
     }
     
     private func moveRectangle(geo: GeometryProxy) {

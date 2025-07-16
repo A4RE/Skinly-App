@@ -22,8 +22,6 @@ struct HomeView: View {
     @State private var isShowingAIWorkView = false
     @State private var isShowingResultView = false
     
-    @State private var diagnosisResult: DiagnosisResult? = nil
-    
     var body: some View {
         NavigationStack {
             VStack {
@@ -43,12 +41,22 @@ struct HomeView: View {
             }
             .onReceive(NotificationCenter.default.publisher(for: .didAddNewScan)) { _ in
                 historyViewModel.loadCases(context: modelContext)
+                profileViewModel.updateStatistics(from: historyViewModel)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .background(Color.appBackground)
             .sheet(isPresented: $viewModel.showSourceSelectionSheet) {
                 SourceSelectionSheet(viewModel: viewModel) { source in
                     handleImageSource(source)
+                }
+            }
+            .fullScreenCover(isPresented: $isShowingImagePicker) {
+                ImagePicker(sourceType: selectedSourceType) { image in
+                    imageEditingModel.originalImage = image
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                        isShowingScanEditor = true
+                    }
                 }
             }
             .fullScreenCover(isPresented: $isShowingScanEditor) {
@@ -67,29 +75,26 @@ struct HomeView: View {
                     }
                 }
             }
-            .fullScreenCover(isPresented: $isShowingAIWorkView, content: {
-                if let croppedImage = imageEditingModel.originalImage {
-                    AnalyzingView(image: croppedImage) { _, result  in
-                        self.diagnosisResult = result
-                        self.isShowingResultView = true
+            .fullScreenCover(isPresented: $isShowingAIWorkView) {
+                if let img = imageEditingModel.originalImage {
+                    AnalyzingView(image: img) { _, result in
+                        DispatchQueue.main.async {
+                            self.viewModel.diagnosisResult = result
+                            self.isShowingAIWorkView = false
+                            self.isShowingResultView = true
+                        }
                     }
                 }
-            })
-            .fullScreenCover(isPresented: $isShowingResultView, content: {
-                if let croppedImage = imageEditingModel.originalImage {
-                    if let result = diagnosisResult {
-                        ResultView(image: croppedImage, diagnosis: result)
-                    } else {
-                        ResultView(image: croppedImage, diagnosis: DiagnosisResult(label: "Неизвестно", riskLevel: .looking))
-                    }
-                }
-            })
-            .fullScreenCover(isPresented: $isShowingImagePicker) {
-                ImagePicker(sourceType: selectedSourceType) { image in
-                    imageEditingModel.originalImage = image
-                    
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                        isShowingScanEditor = true
+            }
+            .fullScreenCover(isPresented: $isShowingResultView) {
+                if let img    = imageEditingModel.originalImage,
+                   let result = viewModel.diagnosisResult {
+                    ResultView(image: img, diagnosis: result)
+                } else {
+                    ZStack {
+                        Color.white
+                        Text("ERROR")
+                            .foregroundColor(.red)
                     }
                 }
             }
@@ -203,10 +208,11 @@ struct HomeView: View {
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(alignment: .leading) {
                     StatisticsView(statistics: profileViewModel.statistics)
+                        .padding(.top, 5)
                         .shadow(color: Color.black.opacity(0.2), radius: 5, x: 0, y: 2)
                     createHistoryButton()
                         .padding(.vertical, 10)
-                    Text("Последние сканирования")
+                    Text("recent_scans")
                         .font(.headline)
                         .multilineTextAlignment(.leading)
                         .foregroundStyle(Color.appPrimaryText)
@@ -217,7 +223,6 @@ struct HomeView: View {
                             ScanItemView(scan: scan)
                         }
                     }
-                    .padding(.vertical, 5)
                 }
                 .padding(.horizontal)
                 .padding(.top, geometry.size.height * 0.13)
@@ -230,7 +235,7 @@ struct HomeView: View {
         Button(action: {
             viewModel.showSourceSelectionSheet.toggle()
         }) {
-            Text("Сканировать")
+            Text("scan")
                 .font(.headline)
                 .padding()
                 .frame(maxWidth: .infinity)
@@ -245,7 +250,7 @@ struct HomeView: View {
     @ViewBuilder
     private func createHistoryButton() -> some View {
         NavigationLink(destination: HistoryListView()) {
-            Text("История сканирований")
+            Text("scan_history")
                 .font(.headline)
                 .padding()
                 .frame(maxWidth: .infinity)
@@ -269,11 +274,11 @@ struct HomeView: View {
                     .stroke(Color.appSecondaryText, lineWidth: 2)
                     .frame(height: 150)
             }
-            Text("История сканирований пуста")
+            Text("empty_scan_history")
                 .font(.title2)
                 .fontWeight(.semibold)
                 .foregroundStyle(Color.appSecondaryText)
-            Text("Сделайте снимок кожи для проведения анализа на кожные заболевания, включая невус и меланому.")
+            Text("scan_instruction")
                 .font(.headline)
                 .fontWeight(.regular)
                 .foregroundStyle(Color.appSecondaryText)

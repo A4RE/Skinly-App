@@ -1,0 +1,42 @@
+"recent_scans" = "Recent Scans";
+"scan" = "Scan";
+"scan_history" = "Scan history";
+"empty_scan_history" = "Scan history is empty";
+"scan_instruction" = "Take a photo of your skin to analyze for skin conditions, including nevus and melanoma.";
+
+"total_scans" = "Total scans";
+"safety_scans" = "Safety";
+"looking_scans" = "Looking";
+"warning_scans" = "Warning";
+
+"choose_source" = "Choose a source";
+"source_gallery" = "Gallery";
+"source_camera" = "Camera";
+"source_files" = "Files";
+"close" = "Close";
+
+"melanoma" = "Melanoma";
+"nevus" = "Nevus";
+"actinic_keratosis" = "Actinic Keratosis";
+"basal_cell_carcinoma" = "Basal Cell Carcinoma";
+"eczema_dermatitis" = "Eczema / Dermatitis";
+"infectious" = "Infectious Lesion";
+"psoriasis" = "Psoriasis";
+"seborrheic_keratosis" = "Seborrheic Keratosis";
+"squamous_cell_carcinoma" = "Squamous Cell Carcinoma";
+"unknown" = "Unknown";
+"model_error" = "Model Error";
+"sending_image" = "Sending image";
+"analyzing_image" = "Analyzing image";
+"processing_image" = "Processing image";
+"getting_result" = "Getting result";
+
+"result_title" = "Result";
+"result_diagnosis" = "Diagnosis: ";
+"result_recommendation" = "Recommendation: ";
+"risklevel_safe" = "No concerns";
+"risklevel_looking" = "Monitor";
+"risklevel_dangerous" = "Consult a specialist urgently";
+"analysis_warning" = "⚠️ Warning: The analysis results are preliminary. For an accurate diagnosis, be sure to consult a qualified doctor.";
+"save_result" = "Save result";
+"make_new_scan" = "Make new scan";

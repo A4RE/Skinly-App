@@ -4,10 +4,19 @@ struct DiagnosisResult {
     var label: String
     var riskLevel: RiskLevel
 }
-enum RiskLevel: String, Codable {
-    case safe = "Не беспокойтесь"
-    case looking = "Наблюдайте"
-    case dangerous = "Срочно обратитесь к специалисту"
+
+enum RiskLevel: String, Codable, CaseIterable {
+    case safe
+    case looking
+    case dangerous
+    
+    var localized: LocalizedStringKey {
+        switch self {
+        case .safe: return "risklevel_safe"
+        case .looking: return "risklevel_looking"
+        case .dangerous: return "risklevel_dangerous"
+        }
+    }
 
     var color: Color {
         switch self {

@@ -13,9 +13,11 @@ struct DermaScanApp: App {
                     .environmentObject(appState)
                     .environmentObject(historyViewModel)
                     .environmentObject(profileViewModel)
+                    .environment(\.colorScheme, .light)
             } else {
                 SplashScreenView()
                     .environmentObject(appState)
+                    .environment(\.colorScheme, .light)
             }
         }
         .modelContainer(for: [ScanCase.self, Scan.self])

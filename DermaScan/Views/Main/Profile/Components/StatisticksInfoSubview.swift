@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct StatisticksInfoSubview: View {
-    var name: String
+    var name: LocalizedStringKey
     var image: String
     var value: Int
     var percentage: Int?
@@ -12,17 +12,20 @@ struct StatisticksInfoSubview: View {
                 .scaledToFit()
                 .foregroundColor(color)
                 .frame(height: 20)
-            Text("\(name): \(value) \(percentage != nil ? "(\(percentage!)%)" : "")")
-                .font(.subheadline)
-                .foregroundColor(color)
+            (
+                Text(name) + Text(": \(value)") +
+                Text(percentage != nil ? " (\(percentage!)%)" : "")
+            )
+            .font(.subheadline)
+            .foregroundColor(color)
         }
     }
     
     private var color: Color {
         switch name {
-        case "Безопасных": Color.green
-        case "Под наблюдением": Color.yellow
-        case "Опасных": Color.red
+        case "safety_scans": Color.green
+        case "looking_scans": Color.yellow
+        case "warning_scans": Color.red
         default: Color.appPrimaryText
         }
     }

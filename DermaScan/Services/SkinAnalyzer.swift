@@ -8,7 +8,6 @@ final class SkinAnalyzer {
     private let model: VNCoreMLModel
 
     init?() {
-        // Загружаем модель из сгенерированного класса
         guard let coreMLModel = try? SkinClassifier(configuration: MLModelConfiguration()).model,
               let visionModel = try? VNCoreMLModel(for: coreMLModel) else {
             return nil
@@ -16,7 +15,6 @@ final class SkinAnalyzer {
         self.model = visionModel
     }
 
-    /// Основной метод: принимает UIImage, возвращает диагноз и вероятности
     func analyze(image: UIImage, completion: @escaping (String?, [String: Float]) -> Void) {
         guard let ciImage = CIImage(image: image) else {
             print("❌ Невозможно создать CIImage из UIImage")

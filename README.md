@@ -27,7 +27,7 @@ To keep the repository lightweight and within GitHub's size limits, the Core ML 
 
 ### ➕ How to add the model to the project:
 
-1. Download the `.mlmodel` file from the link above.
+1. Download the `.mlpackage` file from the link above.
 2. Open the Xcode project.
 3. Drag and drop the model file into the `Resources` folder in the Xcode file navigator.
 4. Make sure to check ✅ **"Copy items if needed"** and add it to the correct target.

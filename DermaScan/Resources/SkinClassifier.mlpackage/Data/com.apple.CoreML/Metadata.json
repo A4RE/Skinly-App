@@ -1,0 +1,10 @@
+{
+  "MLModelVersionStringKey" : "--",
+  "MLModelDescriptionKey" : "--",
+  "MLModelCreatorDefinedKey" : {
+    "com.github.apple.coremltools.version" : "7.0",
+    "com.github.apple.coremltools.source" : "torch==2.0.1+cu117"
+  },
+  "MLModelAuthorKey" : "Andrei Kovalenko",
+  "MLModelLicenseKey" : "--"
+}

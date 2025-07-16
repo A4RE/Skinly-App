@@ -1,0 +1,2 @@
+"NSCameraUsageDescription" = "Camera access is required to analyze skin.";
+"NSPhotoLibraryUsageDescription" = "Photo library access is required to select a skin image.";

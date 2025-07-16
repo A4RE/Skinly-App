@@ -15,9 +15,22 @@
 		54B158EA2D5A9C68005D0FD1 /* DermaScan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DermaScan.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		549A58222E27EB0F00F21BCE /* Exceptions for "DermaScan" folder in "DermaScan" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 54B158E92D5A9C68005D0FD1 /* DermaScan */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		54B158EC2D5A9C68005D0FD1 /* DermaScan */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				549A58222E27EB0F00F21BCE /* Exceptions for "DermaScan" folder in "DermaScan" target */,
+			);
 			path = DermaScan;
 			sourceTree = "<group>";
 		};
@@ -263,11 +276,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"DermaScan/Preview Content\"";
 				DEVELOPMENT_TEAM = 6N55PVMV5W;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = DermaScan/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Skinly;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.medical";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Предоставьте доступ к камере, чтобы приложение могло начать сканирование";
@@ -281,7 +295,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.13;
+				MARKETING_VERSION = 0.14;
 				PRODUCT_BUNDLE_IDENTIFIER = a4rek0.DermaScan;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -300,11 +314,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"DermaScan/Preview Content\"";
 				DEVELOPMENT_TEAM = 6N55PVMV5W;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = DermaScan/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Skinly;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.medical";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Предоставьте доступ к камере, чтобы приложение могло начать сканирование";
@@ -318,7 +333,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.13;
+				MARKETING_VERSION = 0.14;
 				PRODUCT_BUNDLE_IDENTIFIER = a4rek0.DermaScan;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

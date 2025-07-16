@@ -1,0 +1,2 @@
+"NSCameraUsageDescription" = "Для анализа кожи требуется доступ к камере.";
+"NSPhotoLibraryUsageDescription" = "Для загрузки фото кожи из галереи требуется доступ к библиотеке.";

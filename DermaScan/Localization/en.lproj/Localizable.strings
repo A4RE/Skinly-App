@@ -40,3 +40,9 @@
 "analysis_warning" = "⚠️ Warning: The analysis results are preliminary. For an accurate diagnosis, be sure to consult a qualified doctor.";
 "save_result" = "Save result";
 "make_new_scan" = "Make new scan";
+
+"sources_title" = "📚 Sources and Scientific Basis";
+"sources_description" = "The app uses a model trained on publicly available medical datasets:";
+"sources_warning_title" = "⚠️ Important";
+"sources_warning_description" = "This app is not a medical device and does not provide a diagnosis. All recommendations are for informational and research purposes only.\n\nResults are based on a neural network trained on clinical datasets. Please consult a healthcare professional before taking any medical action.";
+"sources_nav_title" = "About Sources";

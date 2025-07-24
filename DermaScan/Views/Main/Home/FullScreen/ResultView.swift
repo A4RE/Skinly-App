@@ -4,6 +4,7 @@ import SwiftData
 struct ResultView: View {
     let image: UIImage
     @State var diagnosis: DiagnosisResult
+    @State private var showInfo: Bool = false
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     
@@ -18,6 +19,9 @@ struct ResultView: View {
             .frame(maxHeight: .infinity, alignment: .top)
             .padding(.horizontal)
             .background(Color.appBackground)
+            .sheet(isPresented: $showInfo) {
+                InfoView()
+            }
         }
     }
     
@@ -60,9 +64,20 @@ struct ResultView: View {
     
     @ViewBuilder
     private func createTitle() -> some View {
-        Text("result_title")
-            .font(.largeTitle.bold())
-            .foregroundColor(Color.appPrimaryText)
+        HStack {
+            Text("result_title")
+                .font(.largeTitle.bold())
+                .foregroundColor(Color.appPrimaryText)
+            Spacer()
+            Button {
+                showInfo = true
+            } label: {
+                Image(systemName: "info.circle")
+                    .font(.title2)
+                    .foregroundStyle(.blue)
+            }
+
+        }
     }
     
     @ViewBuilder
@@ -86,9 +101,6 @@ struct ResultView: View {
             
             VStack(alignment: .leading) {
                 HStack(alignment: .center) {
-                    Text("result_diagnosis")
-                        .font(.headline)
-                        .foregroundColor(Color.appPrimaryText)
                     
                     Text(LocalizedStringKey(diagnosis.label))
                         .font(.headline)

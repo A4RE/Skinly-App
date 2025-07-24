@@ -21,6 +21,7 @@ struct HomeView: View {
     @State private var isShowingScanEditor = false
     @State private var isShowingAIWorkView = false
     @State private var isShowingResultView = false
+    @State private var isShowInfoView = true
     
     var body: some View {
         NavigationStack {
@@ -105,6 +106,16 @@ struct HomeView: View {
                         .font(.largeTitle.bold())
                         .foregroundColor(Color.appPrimaryText)
                 }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        isShowInfoView = true
+                    } label: {
+                        Image(systemName: "info.circle")
+                            .font(.title2)
+                            .foregroundStyle(.blue)
+                    }
+
+                }
             }
             .alert("Нет доступа к камере", isPresented: $isShowingCameraAlert) {
                 Button("Открыть настройки") {
@@ -128,6 +139,9 @@ struct HomeView: View {
             }
             .ignoresSafeArea(.all)
             .toolbarBackground(.white, for: .navigationBar)
+            .sheet(isPresented: $isShowInfoView) {
+                InfoView()
+            }
         }
     }
     
@@ -137,8 +151,6 @@ struct HomeView: View {
             checkCameraPermissionAndOpen()
         case .gallery:
             checkPhotoLibraryPermissionAndOpen()
-        case .files:
-            break
         }
     }
 

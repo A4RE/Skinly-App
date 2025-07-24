@@ -3,7 +3,6 @@ import SwiftUI
 enum ImageSource {
     case camera
     case gallery
-    case files
 }
 
 struct SourceSelectionSheet: View {
@@ -50,20 +49,6 @@ struct SourceSelectionSheet: View {
                 .padding(.horizontal)
                 
                 Button(action: {
-                    onSelectSource(.files)
-                    viewModel.showSourceSelectionSheet = false
-                }) {
-                    Text("source_files")
-                        .bold()
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.appAccent)
-                        .foregroundColor(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                }
-                .padding(.horizontal)
-                
-                Button(action: {
                     viewModel.showSourceSelectionSheet = false
                 }) {
                     Text("close")
@@ -71,14 +56,14 @@ struct SourceSelectionSheet: View {
                         .frame(maxWidth: .infinity)
                         .padding()
                         .background(Color.appDanger)
-                        .foregroundColor(.appPrimaryText)
+                        .foregroundColor(.white)
                         .clipShape(RoundedRectangle(cornerRadius: 12))
                 }
                 .padding(.horizontal)
                 .padding(.bottom)
             }
         }
-        .presentationDetents([.fraction(size.height < 737 ? 0.6 : 0.48)])
+        .presentationDetents([.fraction(size.height < 737 ? 0.48 : 0.35)])
         .presentationCornerRadius(20)
         .ignoresSafeArea(.all)
     }
